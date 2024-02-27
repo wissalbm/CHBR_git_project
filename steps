@@ -1,0 +1,124 @@
+**Preatretment:**
+1- Creation primitives_values : 30 primitives (23 numeric and 7 nominal)
+    -input file_csv: primitives
+
+    -Condition of primitives values:
+        1.1 nature primitives: FN: FN13-FN22-FN23 int and rest FN : float
+        1.2 Limits value of primitives : over/upper limits - over/ lower limits
+            control generation values:
+                - q= 70% : value generation from upper/lower limits
+                - q= 30% : value generation from over than upper/lower limits
+        1.3 augmentation complexity: defined Probabilist rules to each primitive. NB:Probabilist rules (loi normal, loi binomial, loi guassienne, etc.)
+        method: montecarlo study: loi normale -multi normale: définir la moyenne et l'écart type.
+        exp: limit 10-20: moyenne =15-ecart type : 1/3 après la moyenne=16.5.
+2- Creation analytic_catalog of failures : 10 Failures
+    -input file_csv: Failures
+--> finish the pretreatment
+================================***Implementation of our approach PH-CBR***========================================================
+*A**Case Base Representation:**
+3- Creation Classic_Vector_primitives: 100 classic_vectors (1 vector= 30 primitives) NB: fixed longer- fixed order(1,2,3,...,30)-......
+    -input file_csv: function (Creation primitives_values) PS:"Without loi proba"
+    -output file: Classic_Vector_primitives
+    3.1 tableau: 2 rows and 100 lines :
+            V1 FN1, FN2, ...FN23, FB1, ..., FB7
+            V2 FN1, FN2, ...FN23, FB1, ..., FB7
+            .....
+            V30 FN1, FN2, ...FN23, FB1, ..., FB7
+
+4- Select anomaly_classic_vector_primitives : ? 30% of vectors  (set of vectors_condition: over_upper_limits and over_lower_limits)
+    -input file_csv: 1. Classic_Vector_primitives
+
+    -output file_csv: anomaly_classic_vector_primitives
+
+5- Creation Classic_CaseBase: ? Labeled Anomaly_classic_vector_primitives with associated failure(s):
+       -input file_csv: 1. anomaly_classic_vector_primitives
+                        2. Failures
+       -output file_csv: Classic_CaseBase (anomaly_classic_vector_primitives + Failures)
+     5.1 Labeled Anomaly_classic_vector_primitives: Anomaly_classic_vector_primitives + failure(s)
+
+6- Creation Hypothetical_CaseBase:
+         -input file_csv: 1. Classic_CaseBase
+                          2.anomaly_classic_vector_primitives
+         -output file_csv: Hypothetical_CaseBase
+     6.1 Select important primitive from Anomaly_classic_vector_primitives/ or from Classic_CaseBase
+     6.2 Create Hypothetical_Vector_primitives : ? Hypothetical_vectors (1 vector= variable number of primitives)
+        NB: variable longer(1 vector= 5 primitives,1 vector= 19 primitives, etc.)- variable order(exp:1 vector= FB5,FN9,FN15,...,FB3)-......
+--> finish the structuring of Classic_CB and Hypothetical_CB
+
+
+======================================================PS: At instant =t : New target case===========================================================================
+*B**Target case structure:** (g=target case)
+7- Calculate le vector PSK at instant t:
+     -Input: Hypothetical_CB; Observed sequence; PSK at t-1:
+     7.1 Segmentation H-CB by failure for each feature
+     -Input: H-CB
+       -Select failure one by one  (Browse all failures)
+         - Create case base where cases are labeled with the selected failure: CB_H_LP
+         - Create case base where cases are NOT labeled with the selected failure CB_H_L/P
+     - Input: CB_H_LP
+       - Select feature one by one  (Browse all features)
+         - Create case base where cases are labeled with the selected failure and feature: CB_H_LPF
+         - Create case base where cases are NOT labeled with the selected failure but NOT the feature CB_H_LP/F
+     -Input: CB_H_LPF
+       - Select values of the selected feature : Fv_File
+     ps: Repeat the same steps for each failure with all the primitives
+     7.2 Estimation of Probability measure
+     - Input: CB_H_LPF
+       - Create the Histogram of the primitive fm compared to selected failure Pk
+       - Create the failure possibility distribution selected Pk of Fm using "Ratio scale transformation"
+           Equation: pm,k (fm) = Pr(m) / [maxfmWm  Prm,k(fm)] for all fm  Wm
+       ps: Repeat the same steps for each failure with all the primitives
+       - Create all distributions of failure possibilities as a function of each primitive
+     7.3 Calculating reliability of a primitive
+     -Input: CB_H_LP/F and CB_H_LPF
+       - Calculate the reliability factor using this equation:  b = N1  / (N1+ N2)  [0, 1] where N1= number of cases in CB_H_LPF, N2= number of cases in CB_H_LP/F
+          - If b = 1  then (fm) is completely reliable
+          - If b = 0  then (fm) is NOT reliable
+       - Possibility distribution update using this equation: p‘m,k(fm) = max{pm,k(fm), 1 - b},  fmWm
+       ps: Repeat the same steps for each failure with all the primitives
+       - Merge the representations of the distribution of possibilities for each fault and each primitive
+     7.4 Estimation of the possibilist knowledge state vector (PSK) at time “t”: P(t)
+     - Input
+     7.5 Updating the PSK vector
+     -Input PSK at t-1 and Estimation of the possibilist knowledge state vector (PSK) at time “t”
+        - Calculate the minimum between PSK at "t-1" and PSK at "t"
+
+8- Decision making : Id Fault or  select feature X(t)?
+   8.1 Input: PSK vector
+    pk0 (t)  =  max {pk (t) }
+   8.2 Input: **Sub H-CB (H-CB1 et H-CB2)** and Observed sequence   (Ps*: Sub H-CB segmented in step 10.1 et 10.2)
+    -Most similar cases based on features   (Ps*: method used in step 10)
+   8.3 Input: Sub H-CB (H-CB1 et H-CB2) and PSK vector
+    -Most similar cases based on possibilistic vector (Ps*: method used in step 10.1 et 10.2)
+
+9 Feature selection : LSTM model
+
+*C**Similarity Retrieval phase:**
+10- Segmentation H-CB
+  10.1 Sub H-CB1 = t(cas) g = t(cible)
+  10.2 Sub H-CB2 = t(cas) g > t(cible)
+  10.3 Sub H-CB3 = t(cas) g ≠ t(cible)
+11- Transformation of features space in common space of faults
+  Input Target case and Sub H-CB where Tagret case= S    =     [ 𝑥1,  𝑥2, …..,  𝑥N1  ,   y1,  y2, …..,  yN2]
+                           and         Sub H-CB)=   S’   =     [ 𝑥′1,𝑥′2, …..,𝑥′N1 ,   y′1,y′2, …..,y′N2  ]
+
+11- Distribution of failure possibility with respect to primitives
+        p/S  = [ p/S (p1), p/S (p2), ...., p/S (pK) ]
+    and p/S’  = [ p/S’ (p1), p/S’ (p2), ...., p/S’ (pK) ]
+12- Distance calculate
+    Dist(S, S’) = Dist (p/S , p/S’)
+    12.1 Distance NN(s) ** (Ps: A priori we will use this method)
+        Distmin(T , C  ) = min ||X – Y||2  X=T , YϵC
+    or
+    12.2 Distance des centroïdes
+        Distmeans(T , C ) = || CTarget – C ||2
+    or
+    12.3 Distance moyenne
+        Distave(T , C ) =...
+*=====================================================================*Evaluation*=======================================================================================
+=============================Classic_CBR Approach=========================*VS*===================PH-CBR Approach===================================
+                                                        ========== Case Base representation =========
+                              -K means clustering                                                  -Hypothetical reasoning
+
+                                                          =========== Calculate similarity=========
+                              -KNN (Ka nearest Neighbour)                                          -Possibilistic similarity

@@ -1,0 +1,31 @@
+Symbols FN1-23/ FB1-7,Unit,Mathematical sets,Lower_Limit,Upper_Limit,TruthValue,FalseValue,Freatures_names,Failures
+FN1,kPa,ℝ,-101.300003,-81.300003,_,_,Condenser Vacuum (Vide du condenseur),P5
+FN2,kPa,ℝ+,0,20,_,_,Condenser Cleaner Screen Block (A) Differential Pressure (Différentiel de pression du filtre nettoyeur du condenseur (A)),
+FN3,kPa,ℝ+,0,20,_,_,Condenser Cleaner Screen Block (B) Differential Pressure (Différentiel de pression du filtre nettoyeur du condenseur (B)),
+FN4,℃,ℝ ,0,100,_,_,Condenser Hot Well Temperature (Température du puits chaud du condenseur),
+FN5,℃,ℝ,0,100,_,_,Condenser (A) Inlet Water Temperature (Température de l'eau d'entrée du condenseur A),
+FN6,℃,ℝ,0,100,_,_,Condenser (B) Inlet Water Temperature (Température de l'eau d'entrée du condenseur B),
+FN7,℃,ℝ,0,100,_,_,Condenser (A) Exit Water Temperature (1) (Température de l'eau de sortie du condenseur A - 1),
+FN8,℃,ℝ,0,100,_,_,Condenser (A) Exit Water Temperature (2) (Température de l'eau de sortie du condenseur A - 2),
+FN9,℃,ℝ,0,100,_,_,Condenser (A) Exit Water Temperature (3) (Température de l'eau de sortie du condenseur A - 3),
+FN10,℃,ℝ,0,100,_,_,Condenser (B) Exit Water Temperature (1) (Température de l'eau de sortie du condenseur B - 1),
+FN11,℃,ℝ,0,100,_,_,Condenser (B) Exit Water Temperature (2) (Température de l'eau de sortie du condenseur B - 2),
+FN12,℃,ℝ,0,100,_,_,Condenser (B) Exit Water Temperature (3) (Température de l'eau de sortie du condenseur B - 3),
+FN13,Nombre,ℕ+ ,0,9999,_,_,Number of Collected Condenser Washing Equipment Balls (Nombre de balles d'équipement de lavage du condenseur collectées),P4
+FN14,MPa,ℝ+,0,0.5,_,_,Circulating Water Pump Outlet Pressure (1H Average) (Pression de sortie de la pompe d'eau de circulation (Moyenne sur 1 heure)),P2|P3 |P10
+FN15,(N/A),-,-1,1,_,_,ST Efficiency Condenser Vacuum Degree Deviation Correction (2 GTs) (Correction de la déviation du degré de vide du condenseur pour l'efficacité ST (2 GTs)),P10
+FN16,kPa,ℝ+,0,1000,_,_,Condenser Saturation Pressure (Pression de saturation du condenseur),P10
+FN17,kJ/m2h℃,ℝ+,0,50000,_,_,Actual Heat Transfer Coefficient of Condenser (Coefficient de transfert de chaleur réel du condenseur),P1
+FN18,kPa,ℝ,-100,100,_,_,Condenser Vacuum Deviation (Déviation du vide du condenseur),P5 |P10
+FN19,%,ℝ+,0,100,_,_,Measured Condenser Cleanliness (Propreté mesurée du condenseur),P1
+FN20,m3/h,ℝ+,0,50000,_,_,Actual Cooling Water (Eau de refroidissement réelle),
+FN21,MW,ℝ+,0,250,_,_,ST Generator Output (Production électrique du générateur ST),
+FN22,%/number,ℕ+,0,635,_,_,Collected Balls Finish (État des balles collectées),P8
+FN23,60min-1h,ℝ+,0,60,_,_,Period Time of Cleaning (Durée du nettoyage),
+FB1,,_,_,_,true,false,Condenser Cleaning Device Screen Block (A) Fully Closed (Écran du dispositif de nettoyage du condenseur (A) entièrement fermé),
+FB2,,_,_,_,true,false,Condenser Cleaning Device Screen Block (B) Fully Closed (Écran du dispositif de nettoyage du condenseur (B) entièrement fermé),
+FB3,,_,_,_,true,false,Condensate Cleaning Device System Selector Valve Fully Opened (Soupape de sélection du système de nettoyage du condensat entièrement ouverte),P6
+FB4,,_,_,_,false,true,Condensate Washing System Selector Valve Fully Closed (Soupape de sélection du système de lavage du condensat entièrement fermée),P6
+FB5,,_,_,_,false,true,Ball Recovery Valve Circulation (Soupape de récupération des balles en circulation),P2 |P9
+FB6,,_,_,_,false,true,Condenser Cleaning Device Cleaning Master in Progress (Nettoyage en cours du dispositif de nettoyage du condenseur),
+FB7,,_,_,_,true,false,Start of Condenser Washing Pump (Démarrage de la pompe de nettoyage du condenseur),P7

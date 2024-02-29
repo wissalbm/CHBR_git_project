@@ -10,8 +10,11 @@ from ClassicalDataBase.script.classicalDB import label_vectors_classicalDB, crea
     create_cassicalDB_step2
 from GeneralScripts.convert_type_file import excel_to_csv, csv_to_excel
 from GeneralScripts.empty_folder import empty_folder
+from GeneralScripts.pretretmatet_CBR import remove_header_and_save, remove_header_and_last_column
 from HypotheticalDatabase.scripts.createHypDB import count_nbre_appartenance, trie_appartenanceFile, assign_weights, \
     generate_vector, reorder_primitives_by_membership, map_vector_failure, create_HDB_file, label_HDB
+from PSK_vector.segmentation.scripts.segmentation import extract_failures, create_HCB, remplir_vecteur_failure, \
+    extract_feature, remplir_vecteur_feature, create_CB_H_LPF, process_files, groupe_primitive_valueByName
 from pretreatment.scripts.Creation_Vector_primitives import generate_vectors, add_header_to_vectorsFile
 
 # Redirecting console output to the readme.txt file
@@ -38,6 +41,8 @@ vectorstatut_xsl_withEntete= "pretreatment/files/vectorstatut_xsl_withEntete.xls
 classicalDB_statut =  "ClassicalDataBase/result/classicalDB_statut.csv"
 classicalDB = "ClassicalDataBase/result/classicalDB.csv"
 classicalDB_xsl = "ClassicalDataBase/result/classicalDB_xsl.xlsx"
+data_without_label = 'ClassicalDataBase/result/data_without_label.csv'
+data_without_header = 'ClassicalDataBase/result/data_without_header.csv'
 
 #HypotheticalDatabase
 membership_primitives = "HypotheticalDatabase/files/primitives_membership.csv"
@@ -49,7 +54,17 @@ HypotheticalDatabaseFile_primitiveNames = "HypotheticalDatabase/result/HDB_File_
 HypotheticalDatabase_File_primitivevalues = "HypotheticalDatabase/files/HDB_File_primitivevalues.csv"
 HypotheticalDatabaseFile_withlabel = "HypotheticalDatabase/result/HDB_File_labled.csv"
 
-
+#segmentationFiles
+failure_list = "PSK_vector/segmentation/failure_list.csv"
+output_folder = "PSK_vector/segmentation/sub_databases"
+feature_list = "PSK_vector/segmentation/feature_list.csv"
+source_folder_CB_H_LPF = 'PSK_vector/segmentation/sub_databases/CB_H/withPanne'
+destination_folder_CB_H_LPF = 'PSK_vector/segmentation/sub_databases/CB_H_LPF'
+directoryResultSegmentation = "PSK_vector/segmentation/sub_databases/CB_H_LPF/withpanne"
+file_p = "PSK_vector/segmentation/sub_databases/CB_H_LPF/withpanne/p1_FB1_withpanne.csv"
+CBRFile = "ClassicalDataBase/result/data_without_header.csv"
+primlist = "PSK_vector/segmentation/primlist.csv"
+vecteurResult = 'PSK_vector/segmentation/vecteur.csv'
 
 
 
@@ -68,6 +83,7 @@ if __name__ == "__main__":
     empty_folder("ClassicalDataBase/result")
     empty_folder("HypotheticalDatabase/files")
     empty_folder("HypotheticalDatabase/result")
+    empty_folder("PSK_vector/segmentation/sub_databases")
 
     #pretraitement
     print("Step1: preatraitement phase")
@@ -115,14 +131,32 @@ if __name__ == "__main__":
 
 
 
-   #
+   #cration of a New target case
+    print ("Step4: create of a New target case: PSK ")
+    print("        Sub-step 1 : From H-CB")
+    print("              - Create case base where cases are labeled with the selected failure: CB_H_LP")
+    print("              - Create case base where cases are NOT labeled with the selected failure CB_H_L/P")
+    extract_failures(sourceFile_Failures_CSV, failure_list)
 
+    vecteur_failure = remplir_vecteur_failure(failure_list)
+    create_HCB(HypotheticalDatabaseFile_primitiveNames, output_folder,vecteur_failure)
+    print("CB_H_L/P & CB_H_LP : all failures created with success")
 
+    print("        Sub-step 2 : From CB_H_LP")
+    print("              - Create case base where cases are labeled with the selected failure: CB_H_LPF")
+    print("              - Create case base where cases are NOT labeled with the selected failure CB_H_LP/F")
+    extract_feature(sourceFile_primitives_CSV, feature_list)
+    vecteur_feature = remplir_vecteur_feature(feature_list)
+    create_CB_H_LPF(source_folder_CB_H_LPF, vecteur_feature, destination_folder_CB_H_LPF)
+    print("CB_H_LPF & CB_H_LP/F : all feature created with success")
 
-
-
-
-
+    #preprocessing classiclDB file to extract values
+    remove_header_and_last_column(classicalDB, data_without_label)
+    remove_header_and_save(data_without_label, data_without_header)
+    process_files(file_p, CBRFile,primlist)
+    print("Values vector affected with success")
+    groupe_primitive_valueByName(primlist, vecteurResult)
+    print("Vectors created with success")
 
 
 

@@ -165,36 +165,42 @@ def map_vector_failure(vector_HBR_tri_membership,failuresFile,HBR_vectors_with_F
         print("Le mapping des pannes avec les vecteurs a été effectué avec succès.")
 
 
+
+
+
 def create_HDB_file(ClassicalDataBase, vector_HBR_tri_membership, HypotheticalDatabaseFile):
-    # Lire les données du fichier ClassicalDataBase et stocker les valeurs correspondantes pour chaque primitive
+    # Read the data from the ClassicalDataBase file and store the values for each primitive
     primitive_values = {}
     with open(ClassicalDataBase, 'r') as classical_file:
         reader = csv.DictReader(classical_file)
+        # Extract the primitive names from the header
+        primitive_names = reader.fieldnames[:-1]  # Exclude the 'label' column
         for row in reader:
             for primitive, value in row.items():
                 if primitive != 'label':
                     primitive_values[primitive] = value
 
-    # Ouvrir le fichier vector_HBR_tri_membership pour lecture et HDB_file pour écriture
+    # Open the vector_HBR_tri_membership file for reading and HypotheticalDatabaseFile for writing
     with open(vector_HBR_tri_membership, 'r') as vector_file, \
             open(HypotheticalDatabaseFile, 'w', newline='') as hdb_output:
         reader = csv.reader(vector_file)
         writer = csv.writer(hdb_output)
 
-        # Lire chaque ligne du fichier vector_HBR_tri_membership et remplacer les primitives par leurs valeurs correspondantes
+        # Write the header to the HypotheticalDatabaseFile
+        # writer.writerow(primitive_names)  # Exclude writing the header
+
+        # Read each line from the vector_HBR_tri_membership file and replace the primitives with their corresponding values
+        next(reader)  # Skip the header row
         for row in reader:
             replaced_row = []
             for primitive in row:
                 if primitive in primitive_values:
                     replaced_row.append(primitive_values[primitive])
                 else:
-                    replaced_row.append("FAUX")  # Valeur par défaut si la primitive n'est pas trouvée
+                    replaced_row.append("FAUX")  # Default value if the primitive is not found
             writer.writerow(replaced_row)
 
-    print(f"Le fichier HDB a été créé avec succès : {HypotheticalDatabaseFile}")
-
-
-
+    print(f"The HDB file has been successfully created: {HypotheticalDatabaseFile}")
 
 
 def label_HDB(HypotheticalDatabaseFile_names, HBR_vectors_with_Failurevalues, HypotheticalDatabaseFile_withlabel):

@@ -1,23 +1,24 @@
 import os
 
 
-def empty_folder(folder):
-    # Check if the folder exists
-    if os.path.exists(folder):
-        # List all files in the folder
-        files = os.listdir(folder)
+def empty_folder(folder_path):
+    # Vérifier si le chemin spécifié est un dossier
+    if not os.path.isdir(folder_path):
+        print(f"{folder_path} n'est pas un dossier valide.")
+        return
 
-        # Check if there are any files in the folder
-        if files:
-            # Iterate over all files and delete them one by one
-            for file in files:
-                file_path = os.path.join(folder, file)
-                os.remove(file_path)
+    # Parcours récursif de tous les éléments du dossier
+    for root, dirs, files in os.walk(folder_path, topdown=False):
+        # Supprimer chaque fichier dans le dossier
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            os.remove(file_path)
+        # Supprimer chaque dossier vide
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            os.rmdir(dir_path)
 
-            print(f"The files in the folder '{folder}' have been deleted.")
-        else:
-            print(f"The folder '{folder}' is empty.")
-    else:
-        print(f"The folder '{folder}' does not exist.")
+    print(f"Le dossier {folder_path} a été vidé avec succès.")
+
 
 

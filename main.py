@@ -6,8 +6,10 @@
 import sys
 import time
 
-from CHBR_git_project.PSK_vector.segmentation.scripts.generate_values_to_subDB import regroupe_according_Feature, \
-    regroupe_according_Panne
+from PSK_vector.segmentation.scripts.generate_values_to_subDB import regroupe_according_Feature, \
+    regroupe_according_Panne, create_values_forFeature, generate_value_forGroup_features, \
+    generate_value_forGroup_pannes, nettoyer_tous_les_csv, appliquer_compter_occurences_sur_dossiers_pannes, \
+    appliquer_compter_occurences_sur_dossiers_feature
 from ClassicalDataBase.script.classicalDB import label_vectors_classicalDB, create_cassicalDB_step1, \
     create_cassicalDB_step2
 from GeneralScripts.convert_type_file import excel_to_csv, csv_to_excel
@@ -171,12 +173,48 @@ if __name__ == "__main__":
     vecteur_feature = remplir_vecteur_feature(feature_list)
 
     print("Affect value to to sub-databases___to plot")
-    # Appel de la fonction pour regrouper les fichiers
-    regroupe_according_Feature()
-    # Appel de la fonction pour regrouper les fichiers
-    regroupe_according_Panne()
 
 
+    # create data for calculate curves of cas1 & cas 2
+    # Appel de la fonction pour regrouper les fichiers Feature
+    base_dir = "PSK_vector/segmentation/sub_databases/CB_H_LPF/withpanne"
+    groupe_files_byFeatures = "PSK_vector/segmentation/sub_databases/groupe/Feature"
+    regroupe_according_Feature(base_dir, groupe_files_byFeatures)
+
+    # Appel de la fonction pour regrouper les fichiers Panne
+    base_dir = "PSK_vector/segmentation/sub_databases/CB_H_LPF/withpanne"
+    groupe_files_bypannes = "PSK_vector/segmentation/sub_databases/groupe/Panne"
+    regroupe_according_Panne(base_dir, groupe_files_bypannes)
+
+    # Appel de la fonction pour créer les valeurs aléatoires des Feature
+    primitivesFile = "sourceFiles/primitives.csv"
+    generatesVectors = "sourceFiles/randomValue_forFeatureVector.csv"
+    create_values_forFeature(primitivesFile, generatesVectors)
+
+    # Cas 1 : extract primitive value primitive in panne
+    FeatureGroup = "PSK_vector/segmentation/sub_databases/groupe/Feature"
+    generate_value_forGroup_features(FeatureGroup)
+
+    # cas 2 : extract primitive value selon la panne with primitive
+    PanneGroup = "PSK_vector/segmentation/sub_databases/groupe/Panne"
+    generate_value_forGroup_pannes(PanneGroup)
+
+    # netoyer la colonne val dans tous les fichiersFeature
+    folder_path_Feature = "PSK_vector/segmentation/sub_databases/groupe/Feature"
+    nettoyer_tous_les_csv(folder_path_Feature)
+
+    # netoyer la colonne val dans tous les fichiers Panne
+    folder_path_Panne = "PSK_vector/segmentation/sub_databases/groupe/Panne"
+    nettoyer_tous_les_csv(folder_path_Panne)
+
+    # création des fichiers de données pour feature
+    folder_path_feature = "PSK_vector/segmentation/sub_databases/groupe/Feature"
+    appliquer_compter_occurences_sur_dossiers_feature(folder_path_feature)
+
+    # création des fichiers de données pour pannes
+    folder_path_Panne = "PSK_vector/segmentation/sub_databases/groupe/Panne/"
+    output_folder_panne = "PSK_vector/segmentation/sub_databases/groupe/Panne/courbefiles_pannes/"
+    appliquer_compter_occurences_sur_dossiers_pannes(folder_path_Panne, output_folder_panne)
 
 
 

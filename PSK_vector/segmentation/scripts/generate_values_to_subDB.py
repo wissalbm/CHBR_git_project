@@ -260,7 +260,7 @@ def compter_occurences_feature(file_path):
     parent_folder = os.path.basename(folder_path)
     file_name = os.path.basename(file_path)
     prefix = file_name.split('_')[0]  # Extraire le préfixe du nom du fichier
-    output_folder = os.path.join(folder_path, '..', 'courbefiles')
+    output_folder = os.path.join(folder_path, '..', 'courbefiles_feature')
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     output_file_path = os.path.join(output_folder, f'{parent_folder}_{prefix}.csv')
@@ -275,7 +275,7 @@ def compter_occurences_feature(file_path):
 
     # print(f"Les résultats ont été enregistrés dans '{output_file_path}'.")
 
-def appliquer_compter_occurences_sur_dossiers_feauture(folder_path):
+def appliquer_compter_occurences_sur_dossiers_feature(folder_path):
     for root, dirs, files in os.walk(folder_path):
         for file in files:
             if file.endswith('_Value.csv'):
@@ -283,47 +283,70 @@ def appliquer_compter_occurences_sur_dossiers_feauture(folder_path):
                 compter_occurences_feature(file_path)
 
 
+# préparer les fichiers de données pour tracers les courbes
+def extraire_valeurs_occurrences_pannes(input_file, output_file):
+    # Lire le fichier CSV
+    df = pd.read_csv(input_file)
+
+    # Extraire les valeurs distinctes de la colonne "val" et compter le nombre d'occurrences
+    occurrences = df['val'].value_counts()
+
+    # Écrire les valeurs et leurs occurrences dans un nouveau fichier CSV
+    occurrences.to_csv(output_file, header=['occurrences'], index_label='value')
+
+def appliquer_compter_occurences_sur_dossiers_pannes(folder_path, output_folder):
+    # Créer le dossier 'courbefiles' s'il n'existe pas
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    # Parcourir les fichiers dans le dossier spécifié
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith('_Value.csv'):
+                file_path = os.path.join(root, file)
+                output_file = os.path.join(output_folder, file.replace('withpanne_', ''))
+                extraire_valeurs_occurrences_pannes(file_path, output_file)
 
 
-# Appel de la fonction pour regrouper les fichiers Feature
-base_dir = "PSK_vector/segmentation/sub_databases/CB_H_LPF/withpanne"
-groupe_files_byFeatures= "PSK_vector/segmentation/sub_databases/groupe/Feature"
-regroupe_according_Feature(base_dir, groupe_files_byFeatures)
-
-# Appel de la fonction pour regrouper les fichiers Panne
-base_dir = "PSK_vector/segmentation/sub_databases/CB_H_LPF/withpanne"
-groupe_files_bypannes = "PSK_vector/segmentation/sub_databases/groupe/Panne"
-regroupe_according_Panne(base_dir,groupe_files_bypannes)
-
-# Appel de la fonction pour créer les valeurs aléatoires des Feature
-primitivesFile = "sourceFiles/primitives.csv"
-generatesVectors = "sourceFiles/randomValue_forFeatureVector.csv"
-create_values_forFeature(primitivesFile,generatesVectors)
-
-# Cas 1 : extract primitive value primitive in panne
-FeatureGroup = "PSK_vector/segmentation/sub_databases/groupe/Feature"
-generate_value_forGroup_features(FeatureGroup)
-
-# cas 2 : extract primitive value selon la panne with primitive
-PanneGroup = "PSK_vector/segmentation/sub_databases/groupe/Panne"
-generate_value_forGroup_pannes(PanneGroup)
-
-# netoyer la colonne val dans tous les fichiersFeature
-folder_path_Feature = "PSK_vector/segmentation/sub_databases/groupe/Feature"
-nettoyer_tous_les_csv(folder_path_Feature)
-
-
-# netoyer la colonne val dans tous les fichiers Panne
-folder_path_Panne = "PSK_vector/segmentation/sub_databases/groupe/Panne"
-nettoyer_tous_les_csv(folder_path_Panne)
-
-
-
-# création des fichiers de données pour feature
-folder_path = "PSK_vector/segmentation/sub_databases/groupe/Feature"
-appliquer_compter_occurences_sur_dossiers_feauture(folder_path)
-
-
-# création des fichiers de données pour panne
-folder_path = "PSK_vector/segmentation/sub_databases/groupe/Panne"
-appliquer_compter_occurences_sur_dossiers(folder_path)
+# # Appel de la fonction pour regrouper les fichiers Feature
+# base_dir = "PSK_vector/segmentation/sub_databases/CB_H_LPF/withpanne"
+# groupe_files_byFeatures= "PSK_vector/segmentation/sub_databases/groupe/Feature"
+# regroupe_according_Feature(base_dir, groupe_files_byFeatures)
+#
+# # Appel de la fonction pour regrouper les fichiers Panne
+# base_dir = "PSK_vector/segmentation/sub_databases/CB_H_LPF/withpanne"
+# groupe_files_bypannes = "PSK_vector/segmentation/sub_databases/groupe/Panne"
+# regroupe_according_Panne(base_dir,groupe_files_bypannes)
+#
+# # Appel de la fonction pour créer les valeurs aléatoires des Feature
+# primitivesFile = "sourceFiles/primitives.csv"
+# generatesVectors = "sourceFiles/randomValue_forFeatureVector.csv"
+# create_values_forFeature(primitivesFile,generatesVectors)
+#
+# # Cas 1 : extract primitive value primitive in panne
+# FeatureGroup = "PSK_vector/segmentation/sub_databases/groupe/Feature"
+# generate_value_forGroup_features(FeatureGroup)
+#
+# # cas 2 : extract primitive value selon la panne with primitive
+# PanneGroup = "PSK_vector/segmentation/sub_databases/groupe/Panne"
+# generate_value_forGroup_pannes(PanneGroup)
+#
+# # netoyer la colonne val dans tous les fichiersFeature
+# folder_path_Feature = "PSK_vector/segmentation/sub_databases/groupe/Feature"
+# nettoyer_tous_les_csv(folder_path_Feature)
+#
+#
+# # netoyer la colonne val dans tous les fichiers Panne
+# folder_path_Panne = "PSK_vector/segmentation/sub_databases/groupe/Panne"
+# nettoyer_tous_les_csv(folder_path_Panne)
+#
+#
+#
+# # création des fichiers de données pour feature
+# folder_path_feature = "PSK_vector/segmentation/sub_databases/groupe/Feature"
+# appliquer_compter_occurences_sur_dossiers_feauture(folder_path_feature)
+#
+# # création des fichiers de données pour pannes
+# folder_path_Panne = "PSK_vector/segmentation/sub_databases/groupe/Panne/"
+# output_folder_panne = "PSK_vector/segmentation/sub_databases/groupe/Panne/courbefiles_pannes/"
+# appliquer_compter_occurences_sur_dossiers_pannes(folder_path_Panne, output_folder_panne)

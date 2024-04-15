@@ -6,6 +6,8 @@
 import sys
 import time
 
+from CHBR_git_project.PSK_vector.segmentation.scripts.generate_values_to_subDB import regroupe_according_Feature, \
+    regroupe_according_Panne
 from ClassicalDataBase.script.classicalDB import label_vectors_classicalDB, create_cassicalDB_step1, \
     create_cassicalDB_step2
 from GeneralScripts.convert_type_file import excel_to_csv, csv_to_excel
@@ -132,49 +134,61 @@ if __name__ == "__main__":
 
     label_HDB(HypotheticalDatabaseFile_primitiveNames,HypotheticalDatabase_File_primitivevalues, HypotheticalDatabaseFile_withlabel)
     print("HypotheticalDatabase created with label !finish")
-   #
-   #
-   # #cration of a New target case
-   #  print ("Step4: create of a New target case: PSK ")
-   #  print("We will do two methods to create PSK ")
-   #  print("1- Feature possibility distributions (for a given failure pk): pM,k(fM)")
-   #  print("        Sub-step 1 : From H-CB")
-   #  print("              - Create case base where cases are labeled with the selected failure: CB_H_LP")
-   #  print("              - Create case base where cases are NOT labeled with the selected failure CB_H_L/P")
-   #  extract_failures(sourceFile_Failures_CSV, failure_list)
-   #
-   #  vecteur_failure = remplir_vecteur_failure(failure_list)
-   #  create_HCB(HypotheticalDatabaseFile_primitiveNames, output_folder,vecteur_failure)
-   #  print("CB_H_L/P & CB_H_LP : all failures created with success")
-   #
-   #  print("        Sub-step 2 : From CB_H_LP")
-   #  print("              - Create case base where cases are labeled with the selected failure: CB_H_LPF")
-   #  print("              - Create case base where cases are NOT labeled with the selected failure CB_H_LP/F")
-   #  extract_feature(sourceFile_primitives_CSV, feature_list)
-   #  vecteur_feature = remplir_vecteur_feature(feature_list)
-   #  create_CB_H_LPF(source_folder_CB_H_LPF, vecteur_feature, destination_folder_CB_H_LPF)
-   #  print("CB_H_LPF & CB_H_LP/F : all feature created with success")
-   #
-   #  #preprocessing classiclDB file to extract values
-   #  remove_header_and_last_column(classicalDB, data_without_label)
-   #  remove_header_and_save(data_without_label, data_without_header)
-   #  process_files(file_p, CBRFile,primlist)
-   #  print("Values vector affected with success")
-   #  groupe_primitive_valueByName(primlist, vecteurResult)
-   #  print("Vectors created with success")
-   #
-   #  print("2- Failure possibility distribution (for a given feature): p. / fm(pk) ")
-   #  extract_feature(sourceFile_primitives_CSV, feature_list)
-   #  vecteur_feature = remplir_vecteur_feature(feature_list)
-   #  print ("well done ! good work")
-   #
-   #
-   #
-   #
-   #
-   #
-   #
-   #
+
+
+   #cration of a New target case_calcul of PSK
+    print ("Step4: create of a New target case: PSK ")
+    print("We will do two methods to create PSK ")
+    print("1- Feature possibility distributions (for a given failure pk): pM,k(fM)")
+    print("        Sub-step 1 : From H-CB")
+    print("              - Create case base where cases are labeled with the selected failure: CB_H_LP")
+    print("              - Create case base where cases are NOT labeled with the selected failure CB_H_L/P")
+    extract_failures(sourceFile_Failures_CSV, failure_list)
+
+    vecteur_failure = remplir_vecteur_failure(failure_list)
+    create_HCB(HypotheticalDatabaseFile_primitiveNames, output_folder,vecteur_failure)
+
+    print("CB_H_L/P & CB_H_LP : all failures created with success")
+
+    print("        Sub-step 2 : From CB_H_LP")
+    print("              - Create case base where cases are labeled with the selected failure: CB_H_LPF")
+    print("              - Create case base where cases are NOT labeled with the selected failure CB_H_LP/F")
+    extract_feature(sourceFile_primitives_CSV, feature_list)
+    vecteur_feature = remplir_vecteur_feature(feature_list)
+    create_CB_H_LPF(source_folder_CB_H_LPF, vecteur_feature, destination_folder_CB_H_LPF)
+    print("CB_H_LPF & CB_H_LP/F : all feature created with success")
+
+    #preprocessing classiclDB file to extract values
+    remove_header_and_last_column(classicalDB, data_without_label)
+    remove_header_and_save(data_without_label, data_without_header)
+    process_files(file_p, CBRFile,primlist)
+    print("Values vector affected with success")
+    groupe_primitive_valueByName(primlist, vecteurResult)
+    print("Vectors created with success")
+
+    print("2- Failure possibility distribution (for a given feature): p. / fm(pk) ")
+    extract_feature(sourceFile_primitives_CSV, feature_list)
+    vecteur_feature = remplir_vecteur_feature(feature_list)
+
+    print("Affect value to to sub-databases___to plot")
+    # Appel de la fonction pour regrouper les fichiers
+    regroupe_according_Feature()
+    # Appel de la fonction pour regrouper les fichiers
+    regroupe_according_Panne()
+
+
+
+
+
+    print ("well done ! good work")
+
+
+
+
+
+
+
+
 
     # Restoring the standard output to the console
     sys.stdout.close()

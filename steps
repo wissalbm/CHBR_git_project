@@ -66,15 +66,15 @@
      - Input: CB_H_LPF
        - Create the Histogram of the primitive fm compared to selected failure Pk
        - Create the failure possibility distribution selected Pk of Fm using "Ratio scale transformation"
-           Equation: pm,k (fm) = Pr(m) / [maxfmWm  Prm,k(fm)] for all fm  Wm
+           Equation: pm,k (fm) = Pr(m) / [maxfmΩ Wm  Prm,k(fm)] for all fm Ω Wm
        ps: Repeat the same steps for each failure with all the primitives
        - Create all distributions of failure possibilities as a function of each primitive
      7.3 Calculating reliability of a primitive
      -Input: CB_H_LP/F and CB_H_LPF
-       - Calculate the reliability factor using this equation:  b = N1  / (N1+ N2)  [0, 1] where N1= number of cases in CB_H_LPF, N2= number of cases in CB_H_LP/F
+       - Calculate the reliability factor using this equation:  b = N1  / (N1+ N2) Ω [0, 1] where N1= number of cases in CB_H_LPF, N2= number of cases in CB_H_LP/F
           - If b = 1  then (fm) is completely reliable
           - If b = 0  then (fm) is NOT reliable
-       - Possibility distribution update using this equation: p‘m,k(fm) = max{pm,k(fm), 1 - b},  fmWm
+       - Possibility distribution update using this equation: p‘m,k(fm) = max{pm,k(fm), 1 - b},  fmΩWm
        ps: Repeat the same steps for each failure with all the primitives
        - Merge the representations of the distribution of possibilities for each fault and each primitive
      7.4 Estimation of the possibilist knowledge state vector (PSK) at time “t”: P(t)

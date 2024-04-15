@@ -81,8 +81,8 @@ def generate_vector(vector_HBR, num_vectors=100):
 
         for _ in range(num_vectors):
             # Initialiser la séquence avec FN14, FN18, FB5
-            sequence = ["FN14", "FN18", "FB5"]
-
+            # sequence = ["FN14", "FN18", "FB5"]
+            sequence = ["FN14"]
             # Générer un nombre aléatoire entre 7 et 27 pour déterminer le nombre de primitives restantes à extraire
             remaining_primitives = random.randint(7, 27)
 

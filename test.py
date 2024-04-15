@@ -1,28 +1,43 @@
+import os
 import csv
+from collections import Counter
 
-def extract_unique_values(csv_file):
-    unique_values = []
+def compter_occurences(file_path):
+    # Ouvrir le fichier CSV en mode lecture
+    with open(file_path, mode='r', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        values = [row['val'] for row in reader]
 
-    with open(csv_file, newline='') as csvfile:
-        reader = csv.reader(csvfile)
-        headers = next(reader)  # Get column headers
+    # Compter les occurrences de chaque valeur
+    value_counts = Counter(values)
 
-        # Initialize a dictionary to store unique values for each column
-        unique_values_dict = {header: set() for header in headers}
+    # Créer le chemin pour le nouveau fichier
+    folder_path = os.path.dirname(file_path)
+    parent_folder = os.path.basename(folder_path)
+    file_name = os.path.basename(file_path)
+    prefix = file_name.split('_')[0]  # Extraire le préfixe du nom du fichier
+    output_folder = os.path.join(folder_path, '..', 'courbefiles')
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    output_file_path = os.path.join(output_folder, f'{parent_folder}_{prefix}.csv')
 
-        # Read each row and update unique values for each column
-        for row in reader:
-            for idx, value in enumerate(row):
-                unique_values_dict[headers[idx]].add(value)
+    # Écrire les résultats dans le nouveau fichier
+    with open(output_file_path, mode='w', newline='') as csvfile:
+        fieldnames = ['Value', 'Occurrences']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for val, count in value_counts.items():
+            writer.writerow({'Value': val, 'Occurrences': count})
 
-        # Convert unique values to vectors
-        for header in headers:
-            unique_values.append(list(unique_values_dict[header]))
+    print(f"Les résultats ont été enregistrés dans '{output_file_path}'.")
 
-    return unique_values
+def appliquer_compter_occurences_sur_dossiers(folder_path):
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith('_Value.csv'):
+                file_path = os.path.join(root, file)
+                compter_occurences(file_path)
 
-csv_file = "pretreatment/files/vecteurcsv_withEntete.csv"
-unique_values = extract_unique_values(csv_file)
-
-for idx, column_values in enumerate(unique_values):
-    print(f"Column {idx + 1}: {column_values}")
+# Exemple d'utilisation de la fonction
+folder_path = "PSK_vector/segmentation/sub_databases/groupe/Feature"
+appliquer_compter_occurences_sur_dossiers(folder_path)

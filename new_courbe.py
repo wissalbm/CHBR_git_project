@@ -30,7 +30,7 @@ def plot_csv_data_single_column(column_data, plot_title, output_dir, filename, l
     values, occurrences = zip(*sorted_pairs)
 
     # Tracé de la courbe
-    plt.plot(values, occurrences, marker='o', linestyle='-', color='orange', linewidth=2, label=label)  # Élargissement de la courbe
+    plt.plot(values, occurrences, marker='o', linestyle='-', color='green', linewidth=1.5, label=label,markersize=2.5)  # Élargissement de la courbe
     plt.xlabel('Ω (Omega)')  # Ajout de l'étiquette pour l'axe x
     plt.ylabel("Number of occurrences (Frequency)")  # Ajout de l'étiquette pour l'axe y
     plt.title(plot_title)

@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
     #pretraitement
     print("Step1: preatraitement phase")
-    print ("    - generate 2 files containt 100 vectors   ")
+    print ("    - generate 2 files containt 1000 vectors   ")
     print ("           1- containt with the value of the 30 primitives  (aleatoir generation")
     print("            Constraints: 23 float and 7 boolen & 70% normal (21 values) - 30% abnormal (9 value)")
     print("            2- containt the statut of the 30 primitives (0 abnormal | 1 normal) ")
@@ -125,8 +125,8 @@ if __name__ == "__main__":
     print("assign_weights file generated with success: from failures.csv, calculate the number of appearance of failures ")
     assign_weights(sourceFile_Failures_CSV, weight_primitive)
 
-    generate_vector(vector_HBR, 100)
-    print("100 vectors generated, they startes by FN14,FN18,FB5")
+    generate_vector(vector_HBR, 1000)
+    print("1000 vectors generated, they startes by FN14,FN18,FB5")
     reorder_primitives_by_membership(vector_HBR, primitives_membership_trie, vector_HBR_tri_membership)
     print("scheduling according to the number of appearances successfully completed")
     map_vector_failure(vector_HBR_tri_membership, sourceFile_Failures_CSV, HypotheticalDatabaseFile_primitiveNames)

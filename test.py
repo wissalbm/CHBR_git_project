@@ -1,30 +1,36 @@
-import pandas as pd
-import os
+import numpy as np
+import matplotlib.pyplot as plt
 
-def extraire_valeurs_occurrences(input_file, output_file):
-    # Lire le fichier CSV
-    df = pd.read_csv(input_file)
+# Define the two vectors
+V1 = np.array([14, 5, 15, 4, 11, 19, 1, 13])
+V2 = np.array([14, 15, 4, 11, 19, 13, 5])
 
-    # Extraire les valeurs distinctes de la colonne "val" et compter le nombre d'occurrences
-    occurrences = df['val'].value_counts()
+# Calculate the distance between the two vectors using the NN method
+def calc_distance_nn(V1, V2):
+    dist = np.inf
+    for i in range(len(V1)):
+        for j in range(len(V2)):
+            d = np.linalg.norm(V1[i] - V2[j])
+            if d < dist:
+                dist = d
+    return dist
 
-    # Écrire les valeurs et leurs occurrences dans un nouveau fichier CSV
-    occurrences.to_csv(output_file, header=['occurrences'], index_label='value')
+distance = calc_distance_nn(V1, V2)
 
-def appliquer_compter_occurences_sur_dossiers_feauture(folder_path, output_folder):
-    # Créer le dossier 'courbefiles' s'il n'existe pas
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+# Generate a range of distances for the x-axis of the plot
+distances = np.linspace(0, np.max([np.linalg.norm(V1), np.linalg.norm(V2)])*2, 100)
 
-    # Parcourir les fichiers dans le dossier spécifié
-    for root, dirs, files in os.walk(folder_path):
-        for file in files:
-            if file.endswith('_Value.csv'):
-                file_path = os.path.join(root, file)
-                output_file = os.path.join(output_folder, file.replace('withpanne_', ''))
-                extraire_valeurs_occurrences(file_path, output_file)
+# Calculate the possibility distribution using the formula for the NN method
+possibilities = np.zeros(len(distances))
+for i in range(len(distances)):
+    possibilities[i] = np.exp(-(distances[i] - distance)**2 / (2 * 0.5**2))
 
-# Exemple d'utilisation de la fonction
-folder_path = "PSK_vector/segmentation/sub_databases/groupe/Panne/"
-output_folder = "PSK_vector/segmentation/sub_databases/groupe/Panne/courbefiles/"
-appliquer_compter_occurences_sur_dossiers_feauture(folder_path, output_folder)
+# Normalize the possibilities so that they sum to 1
+possibilities = possibilities / np.sum(possibilities)
+
+# Plot the possibility distribution
+plt.plot(distances, possibilities)
+plt.xlabel('Distance')
+plt.ylabel('Possibility')
+plt.title('Possibility distribution of the distance between V1 and V2')
+plt.show()
